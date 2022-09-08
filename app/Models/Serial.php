@@ -24,6 +24,7 @@ class Serial extends Model
     protected $fillable = [
         'serial_name', 
         'serial_image', 
-        'serial_unique_id ',  
+        'serial_order',
+        'serial_unique_id ', 
     ];
 }

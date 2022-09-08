@@ -29,6 +29,7 @@ use App\Http\Controllers\Install\InstallController;
     Route::middleware(['auth'])->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+        Route::post('serials/reordering', [SerialController::class, 'reordering'])->name('serials.reordering');
         Route::resource('apps', AppController::class);
         Route::resource('serials', SerialController::class);
 

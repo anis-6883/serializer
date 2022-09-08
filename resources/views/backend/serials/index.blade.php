@@ -84,4 +84,45 @@
 	    });
 
     </script>
+
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+
+    <script type="text/javascript">
+
+        $(function() {
+            $("#data-table tbody").sortable({
+                delay: 150,
+                stop: function() {
+                    var streaming_sources = [];
+                    var streamingSourceOrder = 1;
+                    $("#data-table tbody > tr").each(function(){
+                        var id = $(this).attr('id').replace('row_', '');
+                        streaming_sources.push( { id: id, position: streamingSourceOrder });
+                        streamingSourceOrder++;
+                    });
+                    streaming_sources = JSON.stringify( streaming_sources );
+                    updateOrder(streaming_sources);
+                }
+            });
+    
+        });
+    
+        function updateOrder(streaming_sources) {
+            $.ajax({
+                url:"{{ route('serials.reordering') }}",
+                type:'POST',
+                data:{
+                    streaming_sources,
+                    _token: "{{ csrf_token() }}"
+                },
+                success:function(data){
+                    Toast.fire({
+                        icon: 'success',
+                        title: data.message,
+                    })
+                }
+            })
+        }
+
+    </script>
 @endsection

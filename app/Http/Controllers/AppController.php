@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use File;
 use Auth;
 use Validator;
@@ -114,48 +115,52 @@ class AppController extends Controller
             'enable_countries' => 'required|array',
             'status' => 'required',
  
-         ]);
- 
-         if ($validator->fails()) {
-             if($request->ajax()){ 
-                 return response()->json(['result' => 'error', 'message' => $validator->errors()->all()]);
-             }else{
-                 return back()->withErrors($validator)->withInput();
-             }           
-         }
- 
-         $app = new AppModel();
+        ]);
+
+        if ($validator->fails()) {
+            if($request->ajax()){ 
+                return response()->json(['result' => 'error', 'message' => $validator->errors()->all()]);
+            }else{
+                return back()->withErrors($validator)->withInput();
+            }           
+        }
+
+        DB::beginTransaction();
+
+        $app = new AppModel();
          
-         $app->app_unique_id  = $request->app_unique_id ;
-         $app->app_name = $request->app_name;
-         $app->onesignal_app_id = $request->onesignal_app_id;
-         $app->onesignal_api_key = $request->onesignal_api_key;
-         $app->app_publishing_control = $request->app_publishing_control;
-         $app->ads_control = $request->ads_control;
-         $app->ios_share_link = $request->ios_share_link;
-         $app->ios_app_publishing_control = $request->ios_app_publishing_control;
-         $app->ios_ads_control = $request->ios_ads_control;
-         $app->privacy_policy = $request->privacy_policy;
-         $app->facebook = $request->facebook;
-         $app->telegram = $request->telegram;
-         $app->youtube = $request->youtube;
-         $app->enable_countries = json_encode($request->enable_countries);
-         $app->status = $request->status;
+        $app->app_unique_id  = $request->app_unique_id ;
+        $app->app_name = $request->app_name;
+        $app->onesignal_app_id = $request->onesignal_app_id;
+        $app->onesignal_api_key = $request->onesignal_api_key;
+        $app->app_publishing_control = $request->app_publishing_control;
+        $app->ads_control = $request->ads_control;
+        $app->ios_share_link = $request->ios_share_link;
+        $app->ios_app_publishing_control = $request->ios_app_publishing_control;
+        $app->ios_ads_control = $request->ios_ads_control;
+        $app->privacy_policy = $request->privacy_policy;
+        $app->facebook = $request->facebook;
+        $app->telegram = $request->telegram;
+        $app->youtube = $request->youtube;
+        $app->enable_countries = json_encode($request->enable_countries);
+        $app->status = $request->status;
          
-         if($request->hasFile('app_logo')){
-             $file = $request->file('app_logo');
-             $file_name = 'APP_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
-             $file->move(base_path('public/uploads/images/apps/'), $file_name);
-             $app->app_logo = 'public/uploads/images/apps/' . $file_name;
-         }
-         
-         $app->save();
- 
-         if(! $request->ajax()){
-             return redirect('/apps')->with('success', _lang('Information has been added sucessfully!'));
-         }else{
-             return response()->json(['result' => 'success', 'redirect' => url('apps'), 'message' => _lang('Information has been added sucessfully!')]);
-         }
+        if($request->hasFile('app_logo')){
+            $file = $request->file('app_logo');
+            $file_name = 'APP_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
+            $file->move(base_path('public/uploads/images/apps/'), $file_name);
+            $app->app_logo = 'public/uploads/images/apps/' . $file_name;
+        }
+        
+        $app->save();
+
+        DB::commit();
+
+        if(! $request->ajax()){
+            return redirect('/apps')->with('success', _lang('Information has been added sucessfully!'));
+        }else{
+            return response()->json(['result' => 'success', 'redirect' => url('apps'), 'message' => _lang('Information has been added sucessfully!')]);
+        }
     }
 
     /**
@@ -208,65 +213,69 @@ class AppController extends Controller
             'youtube' => 'nullable|string|max:191',
             'enable_countries' => 'required',
             'status' => 'required'
- 
-         ]);
- 
-         if ($validator->fails()) {
-             if($request->ajax()){ 
-                 return response()->json(['result' => 'error', 'message' => $validator->errors()->all()]);
-             }else{
-                 return back()->withErrors($validator)->withInput();
-             }           
-         }
- 
-         $user = Auth::user();
-         
-         if($user->user_type == 'admin'){
-            $app = AppModel::find($id);
-         }else{
-            $app = AppModel::find($id);
-            //  $user_apps = $user->apps->pluck('app_id');
-            //  $app = AppModel::whereIn('id', $user_apps)->first();
-         }
- 
-         $app->app_name = $request->app_name;
-         $app->onesignal_app_id = $request->onesignal_app_id;
-         $app->onesignal_api_key = $request->onesignal_api_key;
-         $app->app_publishing_control = $request->app_publishing_control;
-         $app->ads_control = $request->ads_control;
-         $app->ios_share_link = $request->ios_share_link;
-         $app->ios_app_publishing_control = $request->ios_app_publishing_control;
-         $app->ios_ads_control = $request->ios_ads_control;
-         $app->privacy_policy = $request->privacy_policy;
-         $app->facebook = $request->facebook;
-         $app->telegram = $request->telegram;
-         $app->youtube = $request->youtube;
-         $app->enable_countries = json_encode($request->enable_countries);
-         $app->status = $request->status;
 
-         $prevImageName = $app->app_logo;
-
-         if($request->hasFile('app_logo')){
-             $file = $request->file('app_logo');
-             $file_name = 'APP_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
-             $file->move(base_path('public/uploads/images/apps/'), $file_name);
-             $app->app_logo = 'public/uploads/images/apps/' . $file_name;
-
-             if($prevImageName != "public/default/app.png")
-             {
-                if(File::exists($prevImageName))
-                    File::delete($prevImageName);
-             }
-             
-         }
+        ]);
  
-         $app->save();
+        if ($validator->fails()) {
+            if($request->ajax()){ 
+                return response()->json(['result' => 'error', 'message' => $validator->errors()->all()]);
+            }else{
+                return back()->withErrors($validator)->withInput();
+            }           
+        }
+
+        DB::beginTransaction();
+
+        $user = Auth::user();
+        
+        if($user->user_type == 'admin'){
+        $app = AppModel::find($id);
+        }else{
+        $app = AppModel::find($id);
+        //  $user_apps = $user->apps->pluck('app_id');
+        //  $app = AppModel::whereIn('id', $user_apps)->first();
+        }
  
-         if(! $request->ajax()){
-             return redirect('apps')->with('success', _lang('Information has been updated sucessfully!'));
-         }else{
-             return response()->json(['result' => 'success', 'redirect' => url('apps'), 'message' => _lang('Information has been updated sucessfully')]);
-         }
+        $app->app_name = $request->app_name;
+        $app->onesignal_app_id = $request->onesignal_app_id;
+        $app->onesignal_api_key = $request->onesignal_api_key;
+        $app->app_publishing_control = $request->app_publishing_control;
+        $app->ads_control = $request->ads_control;
+        $app->ios_share_link = $request->ios_share_link;
+        $app->ios_app_publishing_control = $request->ios_app_publishing_control;
+        $app->ios_ads_control = $request->ios_ads_control;
+        $app->privacy_policy = $request->privacy_policy;
+        $app->facebook = $request->facebook;
+        $app->telegram = $request->telegram;
+        $app->youtube = $request->youtube;
+        $app->enable_countries = json_encode($request->enable_countries);
+        $app->status = $request->status;
+
+        $prevImageName = $app->app_logo;
+
+        if($request->hasFile('app_logo')){
+            $file = $request->file('app_logo');
+            $file_name = 'APP_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
+            $file->move(base_path('public/uploads/images/apps/'), $file_name);
+            $app->app_logo = 'public/uploads/images/apps/' . $file_name;
+
+            if($prevImageName != "public/default/app.png")
+            {
+            if(File::exists($prevImageName))
+                File::delete($prevImageName);
+            }
+            
+        }
+ 
+        $app->save();
+
+        DB::commit();
+ 
+        if(! $request->ajax()){
+            return redirect('apps')->with('success', _lang('Information has been updated sucessfully!'));
+        }else{
+            return response()->json(['result' => 'success', 'redirect' => url('apps'), 'message' => _lang('Information has been updated sucessfully')]);
+        }
     }
 
     /**

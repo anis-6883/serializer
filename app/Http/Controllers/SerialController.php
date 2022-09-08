@@ -21,10 +21,10 @@ class SerialController extends Controller
         $user = Auth::user();
 
         if($user->user_type == 'admin')
-            $serials = Serial::orderBy('id', 'DESC');
+            $serials = Serial::orderBy('serial_order');
         else
         {
-            $serials = Serial::orderBy('id', 'DESC');
+            $serials = Serial::orderBy('serial_order');
             // $user_serials = $user->serials->pluck('serial_id');
             // $serials = Serial::whereIn('id', $user_serials)->orderBy('id', 'DESC');
         }
@@ -69,6 +69,9 @@ class SerialController extends Controller
                         $action .= '</div>
                                 </div>';
                         return $action;
+                    })
+                    ->setRowId(function ($serial) {
+                        return "row_" . $serial->id;
                     })
                     ->rawColumns(['action', 'serial_image', '_serial', 'status'])
                     ->make(true);
@@ -117,6 +120,11 @@ class SerialController extends Controller
         $serial->serial_unique_id  = $request->serial_unique_id ;
         $serial->serial_name = $request->serial_name;
         $serial->status = $request->status;
+
+        if(Serial::count() != 0)
+            $serial->serial_order = Serial::max('serial_order') + 1;
+        else
+            $serial->serial_order = 1;
          
         if($request->hasFile('serial_image')){
             $file = $request->file('serial_image');
@@ -190,8 +198,8 @@ class SerialController extends Controller
             $serial = Serial::find($id);
         }else{
             $serial = Serial::find($id);
-        //  $user_serials = $user->serials->pluck('serial_id');
-        //  $serial = Serial::whereIn('id', $user_serials)->first();
+            //  $user_serials = $user->serials->pluck('serial_id');
+            //  $serial = Serial::whereIn('id', $user_serials)->first();
         }
          
         $serial->serial_unique_id  = $request->serial_unique_id ;
@@ -246,5 +254,18 @@ class SerialController extends Controller
         } else {
             return response()->json(['result' => 'success', 'message' => _lang('Information has been deleted sucessfully')]);
         }
+    }
+
+    public function reordering(Request $request)
+    {
+        $serialOfData = json_decode($request->streaming_sources);
+
+        foreach ($serialOfData as $data) { 
+            $serial = Serial::find($data->id);
+            $serial->serial_order = $data->position;
+            $serial->save();  
+        }
+
+        return response()->json(['result' => 'success', 'message' => _lang('Information has been sorted sucessfully!')]);
     }
 }
