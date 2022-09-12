@@ -44,9 +44,9 @@
             </a>
             <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="#">General Settings</a></li>
-                <li class="nav-item"> <a class="nav-link" href="#">Database Backup</a></li>
-                <li class="nav-item"> <a class="nav-link" href="#">Cache Clean</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ url('/general_settings') }}">General Settings</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ url('/database_backup') }}">Database Backup</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{ url('/cache') }}">Cache Clean</a></li>
                 </ul>
             </div>
         </li>

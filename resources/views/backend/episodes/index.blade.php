@@ -47,8 +47,9 @@
                 <table id="data-table" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
-                            <th>{{ _lang('Serial Image') }}</th>
-        					<th>{{ _lang('Serial') }}</th>
+                            <th>{{ _lang('Episode Image') }}</th>
+                            <th>{{ _lang('Episode Title') }}</th>
+                            <th>{{ _lang('Apps') }}</th>
                             <th>{{ _lang('Status') }}</th>
 							<th class="text-center">{{ _lang('Action') }}</th>
                         </tr>
@@ -68,11 +69,12 @@
         $('#data-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: _url + "/serials",
+            ajax: _url + "/episodes",
             "columns" : [
                 
-                { data : "serial_image", name : "serial_image" },
-                { data : "_serial", name : "_serial" },
+                { data : "episode_image", name : "episode_image" },
+                { data : "episode_title", name : "episode_title" },
+                { data : "apps", name : "apps" },
                 { data : "status", name : "status", className : "text-center status" },
                 { data : "action", name : "action", orderable : false, searchable : false, className : "text-center" }
                 
@@ -82,47 +84,6 @@
             "bAutoWidth":false,	
             "ordering": false
 	    });
-
-    </script>
-
-    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-
-    <script type="text/javascript">
-
-        $(function() {
-            $("#data-table tbody").sortable({
-                delay: 150,
-                stop: function() {
-                    var streaming_sources = [];
-                    var streamingSourceOrder = 1;
-                    $("#data-table tbody > tr").each(function(){
-                        var id = $(this).attr('id').replace('row_', '');
-                        streaming_sources.push( { id: id, position: streamingSourceOrder });
-                        streamingSourceOrder++;
-                    });
-                    streaming_sources = JSON.stringify( streaming_sources );
-                    updateOrder(streaming_sources);
-                }
-            });
-    
-        });
-    
-        function updateOrder(streaming_sources) {
-            $.ajax({
-                url:"{{ route('serials.reordering') }}",
-                type:'POST',
-                data:{
-                    streaming_sources,
-                    _token: "{{ csrf_token() }}"
-                },
-                success:function(data){
-                    Toast.fire({
-                        icon: 'success',
-                        title: data.message,
-                    })
-                }
-            })
-        }
 
     </script>
 @endsection

@@ -77,7 +77,7 @@ class SerialController extends Controller
                     ->make(true);
         }
 
-        return view('backend.serials.index');
+        return view('backend.episodes.index');
     }
 
     /**

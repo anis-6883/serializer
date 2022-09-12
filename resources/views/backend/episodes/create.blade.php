@@ -24,7 +24,8 @@
     }
     .select2-container--default .select2-selection--single .select2-selection__rendered{
         line-height: 10px;
-        /* color: #ced4da; */
+        color: #ced4da;
+        padding-bottom: 12px;
     }
 </style>
 @endsection
@@ -229,13 +230,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="col-md-12 text-right restricted d-none mt-4">
-                                        <div class="form-group">
-                                            <button type="button" class="btn btn-primary btn-sm add-more2">{{ _lang('Add More') }}</button>
+                                        <div class="col-md-12 text-right restricted d-none mt-4">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-primary btn-sm add-more2">{{ _lang('Add More') }}</button>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    
 
                                 </div>
                             </div>
@@ -312,7 +314,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-12 restricted d-none">
+                    <div class="col-md-12 restricted d-none field-group2">
                         <div class="card" style="background: #F5F7FF">
                             <div class="card-body">
                                 <div class="text-right">
@@ -347,7 +349,7 @@
         </div>
     </div>
 
-    <div class="col-md-12 restricted field-group2 repeat2 my-2">
+    <div class="restricted field-group2 repeat2 my-2">
         <div class="card" style="background: #F5F7FF">
             <div class="card-body">
                 <div class="text-right">
@@ -427,11 +429,11 @@
     });
 
     $(".appbox").change(function(){
-    if ($('.appbox:checked').length == $('.appbox').length) {
-        $("#checkAll").prop('checked', true).parent().find('span').text('Unselect All');
-    }else{
-        $("#checkAll").prop('checked',false).parent().find('span').text('Select All');
-    }
+        if ($('.appbox:checked').length == $('.appbox').length) {
+            $("#checkAll").prop('checked', true).parent().find('span').text('Unselect All');
+        }else{
+            $("#checkAll").prop('checked',false).parent().find('span').text('Select All');
+        }
     });
 
     // Handle Cover Image/URL
@@ -474,18 +476,6 @@
         $(this).closest('.col-md-12').before(form);
     });
 
-    // Add More Restricted Stream Headers
-    $(document).on('click', '.add-more2', function(){
-        var form = $('.repeat2').clone().removeClass('repeat2');
-        var name = $(this).closest('.field-group').find('[name^="name"]:first').attr('name');
-        var value = $(this).closest('.field-group').find('[name^="value"]:first').attr('name');
-
-        form.find('[name=name]').attr('name', name);
-        form.find('[name=value]').attr('name', value);
-
-        $(this).closest('.col-md-12').before(form);
-    });
-
     // Delete Stream Card
     $(document).on('click','.remove-row',function(){
         $(this).closest('.field-group').remove();
@@ -503,7 +493,17 @@
         }
     });
 
+    // Add More Restricted Stream Headers
+    $(document).on('click', '.add-more2', function(){
+        var form = $('.repeat2').clone().removeClass('repeat2');
+        var name = $(this).closest('.field-group').find('[name^="name"]:first').attr('name');
+        var value = $(this).closest('.field-group').find('[name^="value"]:first').attr('name');
 
+        form.find('[name=name]').attr('name', name);
+        form.find('[name=value]').attr('name', value);
+
+        $(this).closest('.col-md-12').before(form);
+    });
 
     // Delete Restricted Stream Headers
     $(document).on('click','.remove-row2',function(){
