@@ -23,7 +23,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ url('episodes/') }}">
                 <i class='menu-icon fas fa-file-video'></i> 
                 <span class="menu-title">Episode</span>
             </a>

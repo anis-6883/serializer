@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\SerialController;
+use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\Install\InstallController;
         Route::post('serials/reordering', [SerialController::class, 'reordering'])->name('serials.reordering');
         Route::resource('apps', AppController::class);
         Route::resource('serials', SerialController::class);
+        Route::resource('episodes', EpisodeController::class);
 
     });
 
