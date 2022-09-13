@@ -22,7 +22,7 @@ use App\Http\Controllers\Install\InstallController;
 |
 */
 
-Route::middleware(['install'])->group(function () {
+// Route::middleware(['install'])->group(function () {
 
     Auth::routes(['register' => false]);
 
@@ -45,7 +45,7 @@ Route::middleware(['install'])->group(function () {
         });
     });
 
-});
+// });
 
 Route::get('/cache', function(){
     Artisan::call('cache:clear');

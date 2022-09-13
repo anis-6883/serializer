@@ -96,10 +96,10 @@ class EpisodeController extends Controller
         $user = Auth::user();
         if($user->user_type == 'admin'){
             $apps = AppModel::where('status', 1)->get();
-            $serials = Serial::where('status', 1)->get();
+            $serials = Serial::where('status', 1)->orderBy('id', 'DESC')->get();
         }else{
             $apps = AppModel::where('status', 1)->get();
-            $serials = Serial::where('status', 1)->get();
+            $serials = Serial::where('status', 1)->orderBy('id', 'DESC')->get();
         }
         return view('backend.episodes.create', compact('apps', 'serials'));
     }
@@ -181,7 +181,6 @@ class EpisodeController extends Controller
 			Cache::forget("episodes_" . $appData->app_unique_id);
         }
 
-        // return $request->all();
         // dd($request->all());
 
         for ($i=0; $i < count($request->stream_title); $i++) { 
@@ -251,10 +250,10 @@ class EpisodeController extends Controller
         $user = Auth::user();
         if($user->user_type == 'admin'){
             $apps = AppModel::where('status', 1)->get();
-            $serials = Serial::where('status', 1)->get();
+            $serials = Serial::where('status', 1)->orderBy('id', 'DESC')->get();
         }else{
             $apps = AppModel::where('status', 1)->get();
-            $serials = Serial::where('status', 1)->get();
+            $serials = Serial::where('status', 1)->orderBy('id', 'DESC')->get();
         }
         return view('backend.episodes.edit', compact('episode', 'apps', 'serials'));
     }
@@ -269,7 +268,6 @@ class EpisodeController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->all());
-
         $validator = Validator::make($request->all(), [
 
             'apps' => 'required',
@@ -393,6 +391,8 @@ class EpisodeController extends Controller
     public function destroy(Request $request, $id)
     {
         $episode = Episode::find($id);
+        EpisodeApp::where('episode_id', $episode->id)->delete();
+        StreamingSource::where('episode_id', $episode->id)->delete();
         $episode->delete();
 		
 		Cache::forget("episodes");

@@ -4,10 +4,12 @@
 <link rel="stylesheet" href="{{ asset('public/backend/plugins/select2/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/backend/plugins/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/backend/plugins/dropify/dropify.min.css') }}">
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <style>
+    select.form-control {
+    	color: #000;
+	}
     .form-check .form-check-label{
         margin-left: 8px;
     }
@@ -22,10 +24,16 @@
     .select2-container .select2-selection--single{
         height: 38px;
     }
+    span.select2.select2-container.select2-container--default {
+        width: 100% !important;
+    }
     .select2-container--default .select2-selection--single .select2-selection__rendered{
         line-height: 10px;
-        color: #ced4da;
+        color: #000;
         padding-bottom: 12px;
+    }
+    .size .card .card-body {
+        padding: 5px 1.25rem;
     }
 </style>
 @endsection
@@ -154,96 +162,104 @@
         </div>
     </div>
 
+    <!-- Episode Link -->
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card position-relative">
-                <div class="card-body">
+                <div class="card-body size">
                     <h3 class="font-weight-bold mb-4">{{ _lang('Episode') }} <span style="color: #dc3545">{{ _lang('Links') }}</span></h3>
-                    
-                    <div class="col-md-12 mb-3 field-group">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="text-right">
-                                    <button style="padding: 3px 10px;" type="button" class="btn btn-danger btn-sm" disabled>-</button>
-                                </div>
+                
+                    <div class="row mb-4 field-group" style="width: 100%; margin:auto;">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
 
-                                <div class="row">
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="control-label">{{ _lang('Stream Title') }}</label>
-                                            <input type="text" class="form-control" name="stream_title[0]" required>
-                                        </div>
+                                    <div class="text-right">
+                                        <button style="padding: 1px 8px;" type="button" class="btn btn-danger btn-sm">-</button>
                                     </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="control-label">{{ _lang('Resulation') }}</label>
-                                            <select class="form-control" name="resulation[0]" required>
-                                                <option value="">{{ _lang('Select One') }}</option>
-                                                <option value="1080p">{{ _lang('1080p') }}</option>
-                                                <option value="720p">{{ _lang('720p') }}</option>
-                                                <option value="480p">{{ _lang('480p') }}</option>
-                                                <option value="360p">{{ _lang('360p') }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="control-label">{{ _lang('Stream Type') }}</label>
-                                            <select class="form-control stream_type" name="stream_type[0]" required>
-                                                <option value="">{{ _lang('Select One') }}</option>
-                                                <option value="m3u8">{{ _lang('M3u8') }}</option>
-                                                <option value="restricted">{{ _lang('Restricted') }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="control-label">{{ _lang('Stream Url') }}</label>
-                                            <input type="url" class="form-control" name="stream_url[0]" required>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-md-12 restricted d-none field-group2">
-                                        <div class="card" style="background: #F5F7FF">
-                                            <div class="card-body">
-                                                <div class="text-right">
-                                                    <button style="padding: 2px 8px;" type="button" class="btn btn-danger btn-xs remove-row2">-</button>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 restricted d-none">
-                                                        <div class="form-group">
-                                                            <label class="control-label">{{ _lang('Name') }}</label>
-                                                            <input type="text" class="form-control" name="name[0][]" value="Content-Type">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6 restricted d-none">
-                                                        <div class="form-group">
-                                                            <label class="control-label">{{ _lang('Value') }}</label>
-                                                            <input type="text" class="form-control" name="value[0][]" value="application/json; charset=UTF-8">
-                                                        </div>
-                                                    </div>
-                                                </div>
+    
+                                    <div class="row">
+    
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">{{ _lang('Stream Title') }}</label>
+                                                <input type="text" class="form-control" name="stream_title[0]" required>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 text-right restricted d-none mt-4">
+    
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">{{ _lang('Resulation') }}</label>
+                                                <select class="form-control" name="resulation[0]" required>
+                                                    <option value="">{{ _lang('Select One') }}</option>
+                                                    <option value="1080p">{{ _lang('1080p') }}</option>
+                                                    <option value="720p">{{ _lang('720p') }}</option>
+                                                    <option value="480p">{{ _lang('480p') }}</option>
+                                                    <option value="360p">{{ _lang('360p') }}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+    
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">{{ _lang('Stream Type') }}</label>
+                                                <select class="form-control stream_type" name="stream_type[0]" required>
+                                                    <option value="">{{ _lang('Select One') }}</option>
+                                                    <option value="m3u8">{{ _lang('M3u8') }}</option>
+                                                    <option value="restricted">{{ _lang('Restricted') }}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+    
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="control-label">{{ _lang('Stream Url') }}</label>
+                                                <input type="url" class="form-control" name="stream_url[0]" required>
+                                            </div>
+                                        </div>
+    
+                                        <!-- Nested Form Fields (Start) -->
+                                        <div class="row field-group2 restricted d-none mx-4 mb-3" style="width: 100%">
+
+                                            <div class="col-md-12">
+                                                <div class="card" style="background: #F5F7FF">
+                                                    <div class="card-body">
+                                                        <div class="text-right">
+                                                            <button style="padding: 2px 8px;" type="button" class="btn btn-danger btn-xs">-</button>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6 restricted d-none">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">{{ _lang('Name') }}</label>
+                                                                    <input type="text" class="form-control" name="name[0][]" value="Content-Type">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 restricted d-none">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">{{ _lang('Value') }}</label>
+                                                                    <input type="text" class="form-control" name="value[0][]" value="application/json; charset=UTF-8">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> 
+
+                                        </div>
+                                        <!-- Nested Form Fields (End) -->
+
+                                        <div class="col-md-11 text-right restricted d-none m-auto">
                                             <div class="form-group">
                                                 <button type="button" class="btn btn-primary btn-sm add-more2">{{ _lang('Add More') }}</button>
                                             </div>
                                         </div>
+
                                     </div>
-
-                                    
-
                                 </div>
                             </div>
                         </div>
                     </div> 
-
+                 
                     <div class="col-md-12 text-right mt-4">
                         <div class="form-group">
                             <button type="button" class="btn btn-primary btn-sm add-more">{{ _lang('Add More') }}</button>
@@ -256,8 +272,8 @@
 
         <div class="col-md-12">
             <div class="form-group" style="text-align: end">
-                <button type="submit" class="btn btn-primary btn-md">{{ _lang('Save') }}</button>
                 <button type="reset" class="btn btn-danger btn-md">{{ _lang('Reset') }}</button>
+                <button type="submit" class="btn btn-primary btn-md">{{ _lang('Save') }}</button>
             </div>
         </div>
 
@@ -267,105 +283,110 @@
 
 <div class="d-none">
 
-    <div class="col-md-12 mb-3 field-group repeat my-2">
-        <div class="card">
-            <div class="card-body">
-                <div class="text-right">
-                    <button style="padding: 3px 10px;" type="button" class="btn btn-danger btn-sm remove">-</button>
-                </div>
-    
-                <div class="row">
-    
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">{{ _lang('Stream Title') }}</label>
-                            <input type="text" class="form-control" name="stream_title" required>
-                        </div>
-                    </div>
-    
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">{{ _lang('Resulation') }}</label>
-                            <select class="form-control" name="resulation" required>
-                                <option value="">{{ _lang('Select One') }}</option>
-                                <option value="1080p">{{ _lang('1080p') }}</option>
-                                <option value="720p">{{ _lang('720p') }}</option>
-                                <option value="480p">{{ _lang('480p') }}</option>
-                                <option value="360p">{{ _lang('360p') }}</option>
-                            </select>
-                        </div>
-                    </div>
-    
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">{{ _lang('Stream Type') }}</label>
-                            <select class="form-control stream_type" name="stream_type" required>
-                                <option value="">{{ _lang('Select One') }}</option>
-                                <option value="m3u8">{{ _lang('M3u8') }}</option>
-                                <option value="restricted">{{ _lang('Restricted') }}</option>
-                            </select>
-                        </div>
-                    </div>
-    
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">{{ _lang('Stream Url') }}</label>
-                            <input type="url" class="form-control" name="stream_url" required>
-                        </div>
+    <div class="row mb-4 field-group repeat" style="width: 100%; margin:auto;">
+        <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-right">
+                        <button style="padding: 1px 8px;" type="button" class="btn btn-danger btn-sm remove">-</button>
                     </div>
 
-                    <div class="col-md-12 restricted d-none field-group2">
-                        <div class="card" style="background: #F5F7FF">
-                            <div class="card-body">
-                                <div class="text-right">
-                                    <button style="padding: 2px 8px;" type="button" class="btn btn-danger btn-xs remove-row2">-</button>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 restricted d-none">
-                                        <div class="form-group">
-                                            <label class="control-label">{{ _lang('Name') }}</label>
-                                            <input type="text" class="form-control" name="name" value="Content-Type">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 restricted d-none">
-                                        <div class="form-group">
-                                            <label class="control-label">{{ _lang('Value') }}</label>
-                                            <input type="text" class="form-control" name="value" value="application/json; charset=UTF-8">
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">{{ _lang('Stream Title') }}</label>
+                                <input type="text" class="form-control" name="stream_title" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">{{ _lang('Resulation') }}</label>
+                                <select class="form-control" name="resulation" required>
+                                    <option value="">{{ _lang('Select One') }}</option>
+                                    <option value="1080p">{{ _lang('1080p') }}</option>
+                                    <option value="720p">{{ _lang('720p') }}</option>
+                                    <option value="480p">{{ _lang('480p') }}</option>
+                                    <option value="360p">{{ _lang('360p') }}</option>
+                                </select>
+                            </div>
+                        </div>       
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">{{ _lang('Stream Type') }}</label>
+                                <select class="form-control stream_type" name="stream_type" required>
+                                    <option value="">{{ _lang('Select One') }}</option>
+                                    <option value="m3u8">{{ _lang('M3u8') }}</option>
+                                    <option value="restricted">{{ _lang('Restricted') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">{{ _lang('Stream Url') }}</label>
+                                <input type="url" class="form-control" name="stream_url" required>
                             </div>
                         </div>
 
-                        <div class="col-md-12 text-right restricted mt-4">
+                        <!-- Nested Form Fields (Start) -->
+                        <div class="row field-group2 restricted d-none mx-4 mb-3" style="width: 100%">
+
+                            <div class="col-md-12">
+                                <div class="card" style="background: #F5F7FF">
+                                    <div class="card-body">
+                                        <div class="text-right">
+                                            <button style="padding: 2px 8px;" type="button" class="btn btn-danger btn-xs">-</button>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 restricted d-none">
+                                                <div class="form-group">
+                                                    <label class="control-label">{{ _lang('Name') }}</label>
+                                                    <input type="text" class="form-control" name="name" value="Content-Type">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 restricted d-none">
+                                                <div class="form-group">
+                                                    <label class="control-label">{{ _lang('Value') }}</label>
+                                                    <input type="text" class="form-control" name="value" value="application/json; charset=UTF-8">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+
+                        </div>
+                        <!-- Nested Form Fields (End) -->
+
+                        <div class="col-md-11 text-right restricted d-none m-auto">
                             <div class="form-group">
                                 <button type="button" class="btn btn-primary btn-sm add-more2">{{ _lang('Add More') }}</button>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="restricted field-group2 repeat2 my-2">
-        <div class="card" style="background: #F5F7FF">
-            <div class="card-body">
-                <div class="text-right">
-                    <button style="padding: 2px 8px;" type="button" class="btn btn-danger btn-xs remove-row2">-</button>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 restricted">
-                        <div class="form-group">
-                            <label class="control-label">{{ _lang('Name') }}</label>
-                            <input type="text" class="form-control" name="name">
-                        </div>
+    <div class="row field-group2 restricted mx-4 repeat2 mb-3" style="width: 100%;">
+        <div class="col-md-12">
+            <div class="card" style="background: #F5F7FF">
+                <div class="card-body">
+                    <div class="text-right">
+                        <button style="padding: 2px 8px;" type="button" class="btn btn-danger btn-xs remove-row2">-</button>
                     </div>
-                    <div class="col-md-6 restricted">
-                        <div class="form-group">
-                            <label class="control-label">{{ _lang('Value') }}</label>
-                            <input type="text" class="form-control" name="value">
+                    <div class="row">
+                        <div class="col-md-6 restricted">
+                            <div class="form-group">
+                                <label class="control-label">{{ _lang('Name') }}</label>
+                                <input type="text" class="form-control" name="name">
+                            </div>
+                        </div>
+                        <div class="col-md-6 restricted">
+                            <div class="form-group">
+                                <label class="control-label">{{ _lang('Value') }}</label>
+                                <input type="text" class="form-control" name="value">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -380,7 +401,7 @@
 <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 <script src="{{ asset('public/backend/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('public/backend/plugins/dropify/dropify.min.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
     // Load Dropify
@@ -392,16 +413,12 @@
     }
 
     // Date Time Picker
-    $("#datepicker").datetimepicker({
-        changeYear: true,
-        changeMonth: true,
-        showSecond: true,
-        showAnim: "clip",
-        timeFormat: 'hh:mm:ss',
-        dateFormat: "yy-mm-dd",
-        yearRange: '2000:2050',
+    $("#datepicker").flatpickr({
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        allowInput: true,
     });
-
+    
     // Red * for Required Fields
     $("input:required, select:required, textarea:required")
             .prev()
@@ -502,7 +519,7 @@
         form.find('[name=name]').attr('name', name);
         form.find('[name=value]').attr('name', value);
 
-        $(this).closest('.col-md-12').before(form);
+        $(this).closest('.col-md-11').before(form);
     });
 
     // Delete Restricted Stream Headers

@@ -5,6 +5,9 @@
 <link rel="stylesheet" href="{{ asset('public/backend/plugins/select2/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/backend/plugins/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
 <style>
+	select.form-control {
+    	color: #000;
+	}
 	.select2-container--default .select2-selection--multiple .select2-selection__choice{
 		border: 1px solid #aaa;
 		border-radius: 4px;
