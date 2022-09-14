@@ -32,10 +32,17 @@ class SerialController extends Controller
         if($request->ajax())
         {
             return DataTables::of($serials)
-                    
-                    ->editColumn('serial_image', function($serial){
-
-                        return '<img class="img-sm img-thumbnail" src="' . asset($serial->serial_image) . '">';
+                    ->addColumn('serial_image', function($serial){
+                        if($serial->cover_image_type == 'url'){
+                            return '<div style=" white-space: nowrap; ">
+                            <img class="img-sm img-thumbnail" src="' . $serial->cover_url . '">
+                            </div>';
+                        }
+                        if($serial->cover_image_type == 'image'){
+                            return '<div style=" white-space: nowrap; ">
+                            <img class="img-sm img-thumbnail" src="' . asset($serial->cover_image) . '">
+                            </div>';
+                        }
                     })
                     ->addColumn('_serial', function($serial){
 
@@ -102,7 +109,9 @@ class SerialController extends Controller
             
             'serial_unique_id' => 'required|string|max:191',
             'serial_name' => 'required|string|max:191',
-            'serial_image' => 'nullable|image',
+            'cover_image_type' => 'required|string|max:20',
+            'cover_url' => 'nullable|required_if:cover_image_type,url|url',
+            'cover_image' => 'nullable|required_if:cover_image_type,image|image',
             'status' => 'required',
  
         ]);
@@ -119,6 +128,8 @@ class SerialController extends Controller
          
         $serial->serial_unique_id  = $request->serial_unique_id ;
         $serial->serial_name = $request->serial_name;
+        $serial->cover_image_type = $request->cover_image_type;
+        $serial->cover_url = $request->cover_url;
         $serial->status = $request->status;
 
         if(Serial::count() != 0)
@@ -126,20 +137,20 @@ class SerialController extends Controller
         else
             $serial->serial_order = 1;
          
-        if($request->hasFile('serial_image')){
-            $file = $request->file('serial_image');
+        if($request->hasFile('cover_image')){
+            $file = $request->file('cover_image');
             $file_name = 'SERIAL_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
             $file->move(base_path('public/uploads/images/serials/'), $file_name);
-            $serial->serial_image = 'public/uploads/images/serials/' . $file_name;
+            $serial->cover_image = 'public/uploads/images/serials/' . $file_name;
         }
-         
-         $serial->save();
- 
-         if(! $request->ajax()){
-             return redirect('/serials')->with('success', _lang('Information has been added sucessfully!'));
-         }else{
-             return response()->json(['result' => 'success', 'redirect' => url('serials'), 'message' => _lang('Information has been added sucessfully!')]);
-         }
+
+        $serial->save();
+
+        if(! $request->ajax()){
+            return redirect('/serials')->with('success', _lang('Information has been added sucessfully!'));
+        }else{
+            return response()->json(['result' => 'success', 'redirect' => url('serials'), 'message' => _lang('Information has been added sucessfully!')]);
+        }
     }
 
     /**
@@ -179,7 +190,9 @@ class SerialController extends Controller
             
             'serial_unique_id' => 'required|string|max:191',
             'serial_name' => 'required|string|max:191',
-            'serial_image' => 'nullable|image',
+            'cover_image_type' => 'required|string|max:20',
+            'cover_url' => 'nullable|required_if:cover_image_type,url|url',
+            'cover_image' => 'nullable|image',
             'status' => 'required',
  
         ]);
@@ -204,30 +217,39 @@ class SerialController extends Controller
          
         $serial->serial_unique_id  = $request->serial_unique_id ;
         $serial->serial_name = $request->serial_name;
+        $serial->cover_image_type = $request->cover_image_type;
+        $serial->cover_url = $request->cover_url;
         $serial->status = $request->status;
 
-        $prevImageName = $serial->serial_image;
-         
-        if($request->hasFile('serial_image')){
-            $file = $request->file('serial_image');
-            $file_name = 'SERIAL_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
-            $file->move(base_path('public/uploads/images/serials/'), $file_name);
-            $serial->serial_image = 'public/uploads/images/serials/' . $file_name;
+        $prevImageName = $serial->cover_image;
 
-            if($prevImageName != "public/default/serial.png")
+        if($request->cover_image_type == 'image') 
+        {
+            if($request->hasFile('cover_image'))
             {
+                $file = $request->file('cover_image');
+                $file_name = 'SERIAL_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
+                $file->move(base_path('public/uploads/images/serials/'), $file_name);
+                $serial->cover_image = 'public/uploads/images/serials/' . $file_name;
+    
                 if(File::exists($prevImageName))
                     File::delete($prevImageName);
             }
+        } 
+        else 
+        {
+            $serial->cover_image = null;
+            if(File::exists($prevImageName))
+                File::delete($prevImageName);
         }
-         
-         $serial->save();
- 
-         if(! $request->ajax()){
-             return redirect('/serials')->with('success', _lang('Information has been updated sucessfully!'));
-         }else{
-             return response()->json(['result' => 'success', 'redirect' => url('serials'), 'message' => _lang('Information has been updated sucessfully!')]);
-         }
+            
+        $serial->save();
+
+        if(! $request->ajax()){
+            return redirect('/serials')->with('success', _lang('Information has been updated sucessfully!'));
+        }else{
+            return response()->json(['result' => 'success', 'redirect' => url('serials'), 'message' => _lang('Information has been updated sucessfully!')]);
+        }
     }
 
     /**
@@ -239,13 +261,10 @@ class SerialController extends Controller
     public function destroy(Request $request, $id)
     {
         $serial = Serial::find($id);
-        $img_path = $serial->serial_image;
+        $img_path = $serial->cover_image;
 
-        if($img_path != "public/default/serial.png")
-        {
-            if(File::exists($img_path))
-                File::delete($img_path);
-        }
+        if(File::exists($img_path))
+            File::delete($img_path);
 
         $serial->delete();
 

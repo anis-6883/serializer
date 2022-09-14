@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('css-stylesheet')
-<link rel="stylesheet" href="{{ asset('public/backend/plugins/dropify/dropify.min.css') }}">
+<link rel="stylesheet" href="{{ asset('public/backend/plugins/select2/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/backend/plugins/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('public/backend/plugins/dropify/dropify.min.css') }}">
 <style>
     select.form-control {
     	color: #000;
@@ -16,6 +17,20 @@
 		margin-top: 5px;
 		padding: 6px 5px;
 	}
+    .select2-container--default .select2-selection--single{
+        border: 1px solid #ced4da;
+    }
+    .select2-container .select2-selection--single{
+        height: 38px;
+    }
+    span.select2.select2-container.select2-container--default {
+        width: 100% !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered{
+        line-height: 10px;
+        color: #000;
+        padding-bottom: 12px;
+    }
 </style>
 @endsection
 
@@ -58,10 +73,32 @@
 								<input type="text" name="serial_unique_id" class="form-control" value="{{ $serial->serial_unique_id  }}" readonly required>
 							</div>
 						</div>
+                        
 						<div class="col-md-12">
                             <div class="form-group">
+                                <label class="control-label">{{ _lang('Image Type') }}</label>
+                                <select class="form-control" name="cover_image_type" data-selected="{{ $serial->cover_image_type }}" required>
+                                    <option value="">{{ _lang('Select One') }}</option>
+                                    <option value="url">{{ _lang('Url') }}</option>
+                                    <option value="image">{{ _lang('Image') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 d-none">
+                            <div class="form-group">
+                                <label class="control-label">{{ _lang('Image Url') }}</label>
+                                <input type="text" class="form-control" name="cover_url" value="{{ $serial->cover_url }}" >
+                            </div>
+                        </div>
+                        <div class="col-md-12 {{ ($serial->cover_image_type == 'image') ? '' : ' d-none'}}">
+                            <div class="form-group">
                                 <label class="control-label">{{ _lang('Image') }}</label>
-                                <input type="file" class="form-control dropify" name="serial_image" data-allowed-file-extensions="png jpg jpeg PNG JPG JPEG" data-default-file="{{ asset($serial->serial_image) }}">
+                                <input type="file" class="form-control dropify" name="cover_image" data-allowed-file-extensions="png jpg jpeg PNG JPG JPEG" data-default-file="{{ $serial->cover_image ? asset($serial->cover_image) : '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group cover_image">
+
                             </div>
                         </div>
 
@@ -110,5 +147,45 @@
             $(this).val($(this).data("selected")).trigger("change");
         });
     }
+
+    // Show Image/URL
+    @if($serial->cover_image_type == 'url')
+        $('[name=cover_url]').parent().parent().removeClass('d-none');
+        $('.cover_image').html('<img src="{{ $serial->cover_url }}" style="width: 150px; border-radius: 10px;">');
+    @elseif($serial->cover_image_type == 'image')
+        $('[name=cover_image]').closest('.col-md-12').removeClass('d-none');
+    @else
+        $('[name=cover_image]').closest('.col-md-12').addClass('d-none');
+        $('[name=cover_url]').parent().parent().addClass('d-none');
+    @endif
+
+    // Handle Cover Image/URL
+    $('[name=cover_image_type]').on('change', function() {
+        $('[name=cover_image]').closest('.col-md-12').addClass('d-none');
+        $('[name=cover_url]').parent().parent().addClass('d-none');
+        
+        if($(this).val() == 'url'){
+            $('[name=cover_url]').parent().parent().removeClass('d-none');
+            $('[name=cover_url]').attr("required", true);
+            $('[name=cover_image]').removeAttr('required');
+            $('.cover_image').removeClass('d-none');
+            
+        }else if($(this).val() == 'image'){
+            $('[name=cover_image]').closest('.col-md-12').removeClass('d-none');
+            $('[name=cover_image]').attr("required", true);
+            $('[name=cover_url]').removeAttr('required');
+            $('.cover_image').addClass('d-none');
+        }else{
+            $('[name=cover_image]').closest('.col-md-12').addClass('d-none');
+            $('[name=cover_url]').parent().parent().addClass('d-none');
+            $('[name=cover_image]').removeAttr('required');
+            $('[name=cover_url]').removeAttr('required');
+            $('.cover_image').addClass('d-none');
+        }
+    });
+
+    $('[name=cover_url]').on('keyup', function() {
+        $('.cover_image').html('<img src="' + $(this).val() + '" style="width: 150px; border-radius: 10px;">');
+    });
 </script>
 @endsection

@@ -18,7 +18,9 @@ return new class extends Migration
 
             $table->string('serial_unique_id', 127);
 			$table->string('serial_name', 127);
-			$table->string('serial_image', 255)->default('public/default/serial.png');
+			$table->string('cover_image_type', 15);
+            $table->text('cover_url')->nullable();
+            $table->string('cover_image')->nullable();
             $table->integer('serial_order');
             $table->integer('status')->default(1);
             
