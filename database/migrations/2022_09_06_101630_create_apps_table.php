@@ -23,15 +23,20 @@ return new class extends Migration
             $table->string('onesignal_api_key', 255)->nullable();
             $table->string('app_publishing_control', 31);
             $table->string('ads_control', 31);
-            $table->string('ios_share_link', 127);
             $table->string('ios_app_publishing_control', 31);
             $table->string('ios_ads_control', 31);
-            $table->string('privacy_policy', 127)->nullable();
-			$table->string('facebook', 127)->nullable();
-            $table->string('telegram', 127)->nullable();
-            $table->string('youtube', 127)->nullable();
+            $table->string('google_app_id', 127);
+            $table->string('google_appOpenAd_id', 127);
+            $table->string('google_banner_ads', 127);
+            $table->string('google_interstitial_ads', 127);
             $table->longText('enable_countries')->nullable();
 			$table->integer('status')->default(1);
+            $table->enum('required_app_enable', ['Yes', 'No', 'Update'])->default('Yes');
+            $table->string('required_app_id', 127);
+            $table->string('required_app_url', 255);
+            $table->string('required_app_name', 127);
+            $table->longText('required_app_desc')->nullable();
+            $table->string('required_app_logo', 255)->default('public/default/app.png');
 
             $table->timestamps();
         });

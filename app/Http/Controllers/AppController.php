@@ -107,14 +107,18 @@ class AppController extends Controller
             'ads_control' => 'required|string|max:20',
             'ios_app_publishing_control' => 'required|string|max:20',
             'ios_ads_control' => 'required|string|max:20',
-            'ios_share_link' => 'required|url',
-            'privacy_policy' => 'nullable|string|max:191',
-            'facebook' => 'nullable|string|max:191',
-            'telegram' => 'nullable|string|max:191',
-            'youtube' => 'nullable|string|max:191',
             'enable_countries' => 'required|array',
             'status' => 'required',
- 
+
+            'google_app_id' => 'required|string',
+            'google_appOpenAd_id' => 'required|string',
+            'google_banner_ads' => 'required|string',
+            'google_interstitial_ads' => 'required|string',
+            'required_app_enable' => 'required|string',
+            'required_app_id' => 'required|string',
+            'required_app_url' => 'required|url',
+            'required_app_name' => 'required|string',
+            'required_app_logo' => 'nullable|image',
         ]);
 
         if ($validator->fails()) {
@@ -135,13 +139,19 @@ class AppController extends Controller
         $app->onesignal_api_key = $request->onesignal_api_key;
         $app->app_publishing_control = $request->app_publishing_control;
         $app->ads_control = $request->ads_control;
-        $app->ios_share_link = $request->ios_share_link;
         $app->ios_app_publishing_control = $request->ios_app_publishing_control;
         $app->ios_ads_control = $request->ios_ads_control;
-        $app->privacy_policy = $request->privacy_policy;
-        $app->facebook = $request->facebook;
-        $app->telegram = $request->telegram;
-        $app->youtube = $request->youtube;
+
+        $app->google_app_id = $request->google_app_id;
+        $app->google_appOpenAd_id = $request->google_appOpenAd_id;
+        $app->google_banner_ads = $request->google_banner_ads;
+        $app->google_interstitial_ads = $request->google_interstitial_ads;
+        $app->required_app_enable = $request->required_app_enable;
+        $app->required_app_id = $request->required_app_id;
+        $app->required_app_url = $request->required_app_url;
+        $app->required_app_name = $request->required_app_name;
+        $app->required_app_desc = $request->required_app_desc;
+
         $app->enable_countries = json_encode($request->enable_countries);
         $app->status = $request->status;
          
@@ -150,6 +160,13 @@ class AppController extends Controller
             $file_name = 'APP_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
             $file->move(base_path('public/uploads/images/apps/'), $file_name);
             $app->app_logo = 'public/uploads/images/apps/' . $file_name;
+        }
+
+        if($request->hasFile('required_app_logo')){
+            $file = $request->file('required_app_logo');
+            $file_name = 'APP_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
+            $file->move(base_path('public/uploads/images/apps/'), $file_name);
+            $app->required_app_logo = 'public/uploads/images/apps/' . $file_name;
         }
         
         $app->save();
@@ -206,14 +223,18 @@ class AppController extends Controller
             'ads_control' => 'required|string|max:20',
             'ios_app_publishing_control' => 'required|string|max:20',
             'ios_ads_control' => 'required|string|max:20',
-            'ios_share_link' => 'required|url',
-            'privacy_policy' => 'nullable|string|max:191',
-            'facebook' => 'nullable|string|max:191',
-            'telegram' => 'nullable|string|max:191',
-            'youtube' => 'nullable|string|max:191',
             'enable_countries' => 'required',
-            'status' => 'required'
+            'status' => 'required',
 
+            'google_app_id' => 'required|string',
+            'google_appOpenAd_id' => 'required|string',
+            'google_banner_ads' => 'required|string',
+            'google_interstitial_ads' => 'required|string',
+            'required_app_enable' => 'required|string',
+            'required_app_id' => 'required|string',
+            'required_app_url' => 'required|url',
+            'required_app_name' => 'required|string',
+            'required_app_logo' => 'nullable|image',
         ]);
  
         if ($validator->fails()) {
@@ -229,9 +250,9 @@ class AppController extends Controller
         $user = Auth::user();
         
         if($user->user_type == 'admin'){
-        $app = AppModel::find($id);
+            $app = AppModel::find($id);
         }else{
-        $app = AppModel::find($id);
+            $app = AppModel::find($id);
         //  $user_apps = $user->apps->pluck('app_id');
         //  $app = AppModel::whereIn('id', $user_apps)->first();
         }
@@ -241,30 +262,50 @@ class AppController extends Controller
         $app->onesignal_api_key = $request->onesignal_api_key;
         $app->app_publishing_control = $request->app_publishing_control;
         $app->ads_control = $request->ads_control;
-        $app->ios_share_link = $request->ios_share_link;
         $app->ios_app_publishing_control = $request->ios_app_publishing_control;
         $app->ios_ads_control = $request->ios_ads_control;
-        $app->privacy_policy = $request->privacy_policy;
-        $app->facebook = $request->facebook;
-        $app->telegram = $request->telegram;
-        $app->youtube = $request->youtube;
         $app->enable_countries = json_encode($request->enable_countries);
         $app->status = $request->status;
 
-        $prevImageName = $app->app_logo;
+        $app->google_app_id = $request->google_app_id;
+        $app->google_appOpenAd_id = $request->google_appOpenAd_id;
+        $app->google_banner_ads = $request->google_banner_ads;
+        $app->google_interstitial_ads = $request->google_interstitial_ads;
+        $app->required_app_enable = $request->required_app_enable;
+        $app->required_app_id = $request->required_app_id;
+        $app->required_app_url = $request->required_app_url;
+        $app->required_app_name = $request->required_app_name;
+        $app->required_app_desc = $request->required_app_desc;
 
-        if($request->hasFile('app_logo')){
+        $prevImageName1 = $app->app_logo;
+        $prevImageName2 = $app->required_app_logo;
+
+        if($request->hasFile('app_logo'))
+        {
             $file = $request->file('app_logo');
             $file_name = 'APP_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
             $file->move(base_path('public/uploads/images/apps/'), $file_name);
             $app->app_logo = 'public/uploads/images/apps/' . $file_name;
 
-            if($prevImageName != "public/default/app.png")
+            if($prevImageName1 != "public/default/app.png")
             {
-            if(File::exists($prevImageName))
-                File::delete($prevImageName);
+                if(File::exists($prevImageName1))
+                    File::delete($prevImageName1);
             }
-            
+        }
+
+        if($request->hasFile('required_app_logo'))
+        {
+            $file = $request->file('required_app_logo');
+            $file_name = 'APP_' . time() . "_" . rand() . '.' . $file->getClientOriginalExtension();
+            $file->move(base_path('public/uploads/images/apps/'), $file_name);
+            $app->required_app_logo = 'public/uploads/images/apps/' . $file_name;
+
+            if($prevImageName2 != "public/default/app.png")
+            {
+                if(File::exists($prevImageName2))
+                    File::delete($prevImageName2);
+            }
         }
  
         $app->save();
@@ -288,11 +329,15 @@ class AppController extends Controller
     {
         $app = AppModel::find($id);
         $img_path = $app->app_logo;
+        $img_path2 = $app->required_app_logo;
 
         if($img_path != "public/default/app.png")
         {
             if(File::exists($img_path))
                 File::delete($img_path);
+
+            if(File::exists($img_path2))
+                File::delete($img_path2);
         }
 
         $app->delete();

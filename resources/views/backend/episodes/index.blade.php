@@ -50,6 +50,7 @@
                             <th>{{ _lang('Episode Image') }}</th>
                             <th>{{ _lang('Episode Title') }}</th>
                             <th>{{ _lang('Apps') }}</th>
+                            <th>{{ _lang('Serial') }}</th>
                             <th>{{ _lang('Status') }}</th>
 							<th class="text-center">{{ _lang('Action') }}</th>
                         </tr>
@@ -75,6 +76,7 @@
                 { data : "episode_image", name : "episode_image" },
                 { data : "episode_title", name : "episode_title" },
                 { data : "apps", name : "apps" },
+                { data : "serial", name : "serial"},
                 { data : "status", name : "status", className : "text-center status" },
                 { data : "action", name : "action", orderable : false, searchable : false, className : "text-center" }
                 

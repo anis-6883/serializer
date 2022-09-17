@@ -18,7 +18,7 @@ class CheckApiKey
     {
         if($request->api_key == "")
         {
-            return response()->json(['status' => false, 'message' => "Please, Provide Key!"], 401);
+            return response()->json(['status' => false, 'message' => "Please, Provide Valid Key!"], 401);
             exit();
         }
         else

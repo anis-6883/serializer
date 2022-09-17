@@ -167,7 +167,7 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card position-relative">
                 <div class="card-body size">
-                    <h3 class="font-weight-bold mb-4">{{ _lang('Episode') }} <span style="color: #dc3545">{{ _lang('Links') }}</span></h3>
+                    <h3 class="font-weight-bold mb-4">{{ _lang('Streaming') }} <span style="color: #dc3545">{{ _lang('Sources') }}</span></h3>
                 
                     <div class="row mb-4 field-group" style="width: 100%; margin:auto;">
                         <div class="col-md-12">
@@ -271,7 +271,7 @@
         </div>
 
         <div class="col-md-12">
-            <div class="form-group" style="text-align: end">
+            <div class="form-group">
                 <button type="reset" class="btn btn-danger btn-md">{{ _lang('Reset') }}</button>
                 <button type="submit" class="btn btn-primary btn-md">{{ _lang('Save') }}</button>
             </div>

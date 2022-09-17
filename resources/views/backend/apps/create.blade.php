@@ -119,35 +119,28 @@
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label class="form-control-label">{{ _lang('IOS Share Link') }}</label>
-								<input type="url" name="ios_share_link" class="form-control" value="{{ old('ios_share_link') }}" required>
+								<label class="form-control-label">{{ _lang('Google App ID') }}</label>
+								<input type="text" name="google_app_id" class="form-control" value="{{ old('google_app_id') }}" required>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label class="form-control-label">{{ _lang('Privacy Policy') }}</label>
-								<input type="text" name="privacy_policy" class="form-control" value="{{ old('privacy_policy') }}">
+								<label class="form-control-label">{{ _lang('Google AppOpen Ads ID') }}</label>
+								<input type="text" name="google_appOpenAd_id" class="form-control" value="{{ old('google_appOpenAd_id') }}" required>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label class="form-control-label">{{ _lang('Facebook') }}</label>
-								<input type="url" name="facebook" class="form-control" value="{{ old('facebook') }}">
+								<label class="form-control-label">{{ _lang('Google Banner Ads') }}</label>
+								<input type="text" name="google_banner_ads" class="form-control" value="{{ old('google_banner_ads') }}" required>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label class="form-control-label">{{ _lang('Telegram') }}</label>
-								<input type="url" name="telegram" class="form-control" value="{{ old('telegram') }}">
+								<label class="form-control-label">{{ _lang('Google Interstitial Ads') }}</label>
+								<input type="text" name="google_interstitial_ads" class="form-control" value="{{ old('google_interstitial_ads') }}" required>
 							</div>
 						</div>
-						<div class="col-md-12">
-							<div class="form-group">
-								<label class="form-control-label">{{ _lang('Youtube') }}</label>
-								<input type="url" name="youtube" class="form-control" value="{{ old('youtube') }}">
-							</div>
-						</div>
-
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label" id="block__country__label">{{ _lang('Enable Countries') }}</label>
@@ -156,7 +149,6 @@
 								</select>
 							</div>
 						</div>
-
 						<div class="col-md-6">
                             <div class="form-group">
                                 <label class="control-label">{{ _lang('Status') }}</label>
@@ -166,7 +158,49 @@
                                 </select>
                             </div>
                         </div>
-
+						<div class="col-md-12">
+							<h3 class="font-weight-bold mb-3 mt-3">{{ _lang('Required') }} <span style="color: #dc3545">{{ _lang('App') }}</span></h3>
+						</div>
+						<div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">{{ _lang('Required Enable App') }}</label>
+                                <select class="form-control" name="required_app_enable" required>
+                                    <option value="Yes">{{ _lang('Yes') }}</option>
+                                    <option value="No">{{ _lang('No') }}</option>
+                                    <option value="Update">{{ _lang('Update') }}</option>
+                                </select>
+                            </div>
+                        </div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="form-control-label">{{ _lang('Application Id') }}</label>
+								<input type="text" name="required_app_id" class="form-control" value="{{ old('required_app_id') }}" required>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="form-control-label">{{ _lang('App Url') }}</label>
+								<input type="url" name="required_app_url" class="form-control" value="{{ old('required_app_url') }}" required>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="form-control-label">{{ _lang('App Name') }}</label>
+								<input type="text" name="required_app_name" class="form-control" value="{{ old('required_app_name') }}" required>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label class="form-control-label">{{ _lang('Description') }}</label>
+								<textarea name="required_app_desc" class="form-control" rows="5">{{ old('required_app_desc') }}</textarea>
+							</div>
+						</div>
+						<div class="col-md-12">
+                            <div class="form-group">
+                                <label class="control-label">{{ _lang('Logo') }}</label>
+                                <input type="file" class="form-control dropify" name="required_app_logo" data-allowed-file-extensions="png jpg jpeg PNG JPG JPEG">
+                            </div>
+                        </div>
 						<div class="col-md-12">
 							<div class="form-group">
 								<button type="reset" class="btn btn-danger btn-md">{{ _lang('Reset') }}</button>

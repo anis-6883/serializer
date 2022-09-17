@@ -179,7 +179,7 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card position-relative">
                 <div class="card-body size outerContainer">
-                    <h3 class="font-weight-bold mb-4">{{ _lang('Episode') }} <span style="color: #dc3545">{{ _lang('Links') }}</span></h3>
+                    <h3 class="font-weight-bold mb-4">{{ _lang('Streaming') }} <span style="color: #dc3545">{{ _lang('Sources') }}</span></h3>
                 
                     @foreach (App\Models\StreamingSource::where('episode_id', $episode->id)->get() as $key => $streaming_source)
 
@@ -312,9 +312,9 @@
         </div>
 
         <div class="col-md-12">
-            <div class="form-group" style="text-align: end">
-                <button type="reset" class="btn btn-danger btn-md">{{ _lang('Reset') }}</button>
-                <button type="submit" class="btn btn-primary btn-md">{{ _lang('Save') }}</button>
+            <div class="form-group">
+                {{-- <button type="reset" class="btn btn-danger btn-md">{{ _lang('Reset') }}</button> --}}
+                <button type="submit" class="btn btn-primary btn-md">{{ _lang('Update') }}</button>
             </div>
         </div>
     </div>

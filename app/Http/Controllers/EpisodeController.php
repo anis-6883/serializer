@@ -52,6 +52,14 @@ class EpisodeController extends Controller
 
                 return $apps_name;
             })
+            ->addColumn('serial', function ($episode) {
+                $serial = Episode::select('serial_name')
+                ->join('serials', 'episodes.serial_id', '=', 'serials.id')
+                ->where('episodes.id', $episode->id)
+                ->first();
+
+                return $serial->serial_name;
+            })
             ->addColumn('status', function ($episode) {
                 return $episode->status == 1 ? status(_lang('Active'), 'success') : status(_lang('In-Active'), 'danger');
             })
@@ -80,7 +88,7 @@ class EpisodeController extends Controller
                 return $action;
             })
 
-            ->rawColumns(['episode_image', 'apps', 'action', 'status'])
+            ->rawColumns(['episode_image', 'apps', 'serial', 'action', 'status'])
             ->make(true);
         }
         return view('backend.episodes.index');

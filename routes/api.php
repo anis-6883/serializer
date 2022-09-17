@@ -23,5 +23,6 @@ Route::middleware(['check_api_key'])->group(function () {
 
     Route::post('/v1/serials', [ApiController::class, 'serials']);
     Route::post('/v1/episodes', [ApiController::class, 'episodes']);
+    Route::post('/v1/settings', [ApiController::class, 'settings']);
     
 });
