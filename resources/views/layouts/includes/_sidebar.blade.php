@@ -30,7 +30,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ url('notifications/') }}">
                 <i class='menu-icon fas fa-bell'></i> 
                 <span class="menu-title">Notification</span>
             </a>

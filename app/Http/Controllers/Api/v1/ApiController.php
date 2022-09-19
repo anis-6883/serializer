@@ -22,7 +22,6 @@ class ApiController extends Controller
         DB::raw("CASE WHEN cover_image_type = 'url' THEN cover_url WHEN cover_image_type = 'image' THEN CONCAT('$base_url/', cover_image) END AS image"))
         ->get();
         
-
         if($serials)
         {
             $status = true;

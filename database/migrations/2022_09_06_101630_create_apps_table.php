@@ -19,8 +19,11 @@ return new class extends Migration
             $table->string('app_unique_id', 127);
 			$table->string('app_name', 127);
 			$table->string('app_logo', 255)->default('public/default/app.png');
+            $table->enum('notification_type', ['onesignal', 'fcm']);
             $table->string('onesignal_app_id', 255)->nullable();
             $table->string('onesignal_api_key', 255)->nullable();
+			$table->string('firebase_server_key', 255)->nullable();
+            $table->string('firebase_topics', 255)->nullable();
             $table->string('app_publishing_control', 31);
             $table->string('ads_control', 31);
             $table->string('ios_app_publishing_control', 31);

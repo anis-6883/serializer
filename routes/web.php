@@ -9,6 +9,7 @@ use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Install\InstallController;
 
 /*
@@ -32,10 +33,12 @@ use App\Http\Controllers\Install\InstallController;
     Route::middleware(['auth'])->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-        Route::post('serials/reordering', [SerialController::class, 'reordering'])->name('serials.reordering');
+        Route::post('/serials/reordering', [SerialController::class, 'reordering'])->name('serials.reordering');
+        Route::get('/notifications/deleteall', [NotificationController::class, 'deleteall'])->name('notifications.deleteall');
         Route::resource('apps', AppController::class);
         Route::resource('serials', SerialController::class);
         Route::resource('episodes', EpisodeController::class);
+        Route::resource('notifications', NotificationController::class);
 
         Route::middleware(['permission:admin'])->group(function () {
             // Settings Controller

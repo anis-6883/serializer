@@ -98,18 +98,20 @@ class AppController extends Controller
     {
         $validator = Validator::make($request->all(), [
             
-            'app_unique_id' => 'required|string|max:191',
-            'app_name' => 'required|string|max:191',
+            'app_unique_id' => 'required|string|max:127',
+            'app_name' => 'required|string|max:127',
             'app_logo' => 'nullable|image',
-            'onesignal_app_id' => 'required|string|max:191',
-            'onesignal_api_key' => 'required|string|max:191',
-            'app_publishing_control' => 'required|string|max:20',
-            'ads_control' => 'required|string|max:20',
-            'ios_app_publishing_control' => 'required|string|max:20',
-            'ios_ads_control' => 'required|string|max:20',
+            'notification_type' => 'required|string|max:31',
+            'onesignal_app_id' => 'nullable|required_if:notification_type,==,onesignal|string|max:255',
+            'onesignal_api_key' => 'nullable|required_if:notification_type,==,onesignal|string|max:255',
+            'firebase_server_key' => 'nullable|required_if:notification_type,==,fcm|string|max:255',
+            'firebase_topics' => 'nullable|required_if:notification_type,==,fcm|string|max:255',
+            'app_publishing_control' => 'required|string|max:31',
+            'ads_control' => 'required|string|max:31',
+            'ios_app_publishing_control' => 'required|string|max:31',
+            'ios_ads_control' => 'required|string|max:31',
             'enable_countries' => 'required|array',
             'status' => 'required',
-
             'google_app_id' => 'required|string',
             'google_appOpenAd_id' => 'required|string',
             'google_banner_ads' => 'required|string',
@@ -119,6 +121,7 @@ class AppController extends Controller
             'required_app_url' => 'required|url',
             'required_app_name' => 'required|string',
             'required_app_logo' => 'nullable|image',
+
         ]);
 
         if ($validator->fails()) {
@@ -135,25 +138,26 @@ class AppController extends Controller
          
         $app->app_unique_id  = $request->app_unique_id ;
         $app->app_name = $request->app_name;
+        $app->notification_type = $request->notification_type;
         $app->onesignal_app_id = $request->onesignal_app_id;
         $app->onesignal_api_key = $request->onesignal_api_key;
+        $app->firebase_server_key = $request->firebase_server_key;
+        $app->firebase_topics = $request->firebase_topics;
         $app->app_publishing_control = $request->app_publishing_control;
         $app->ads_control = $request->ads_control;
         $app->ios_app_publishing_control = $request->ios_app_publishing_control;
         $app->ios_ads_control = $request->ios_ads_control;
-
         $app->google_app_id = $request->google_app_id;
         $app->google_appOpenAd_id = $request->google_appOpenAd_id;
         $app->google_banner_ads = $request->google_banner_ads;
         $app->google_interstitial_ads = $request->google_interstitial_ads;
+        $app->enable_countries = json_encode($request->enable_countries);
+        $app->status = $request->status;
         $app->required_app_enable = $request->required_app_enable;
         $app->required_app_id = $request->required_app_id;
         $app->required_app_url = $request->required_app_url;
         $app->required_app_name = $request->required_app_name;
         $app->required_app_desc = $request->required_app_desc;
-
-        $app->enable_countries = json_encode($request->enable_countries);
-        $app->status = $request->status;
          
         if($request->hasFile('app_logo')){
             $file = $request->file('app_logo');
@@ -217,15 +221,17 @@ class AppController extends Controller
             
             'app_name' => 'required|string|max:191',
             'app_logo' => 'nullable|image',
-            'onesignal_app_id' => 'required|string|max:191',
-            'onesignal_api_key' => 'required|string|max:191',
+            'notification_type' => 'required|string|max:31',
+            'onesignal_app_id' => 'nullable|required_if:notification_type,==,onesignal|string|max:255',
+            'onesignal_api_key' => 'nullable|required_if:notification_type,==,onesignal|string|max:255',
+            'firebase_server_key' => 'nullable|required_if:notification_type,==,fcm|string|max:255',
+            'firebase_topics' => 'nullable|required_if:notification_type,==,fcm|string|max:255',
             'app_publishing_control' => 'required|string|max:20',
             'ads_control' => 'required|string|max:20',
             'ios_app_publishing_control' => 'required|string|max:20',
             'ios_ads_control' => 'required|string|max:20',
             'enable_countries' => 'required',
             'status' => 'required',
-
             'google_app_id' => 'required|string',
             'google_appOpenAd_id' => 'required|string',
             'google_banner_ads' => 'required|string',
@@ -253,20 +259,22 @@ class AppController extends Controller
             $app = AppModel::find($id);
         }else{
             $app = AppModel::find($id);
-        //  $user_apps = $user->apps->pluck('app_id');
-        //  $app = AppModel::whereIn('id', $user_apps)->first();
+            //  $user_apps = $user->apps->pluck('app_id');
+            //  $app = AppModel::whereIn('id', $user_apps)->first();
         }
  
         $app->app_name = $request->app_name;
+        $app->notification_type = $request->notification_type;
         $app->onesignal_app_id = $request->onesignal_app_id;
         $app->onesignal_api_key = $request->onesignal_api_key;
+        $app->firebase_server_key = $request->firebase_server_key;
+        $app->firebase_topics = $request->firebase_topics;
         $app->app_publishing_control = $request->app_publishing_control;
         $app->ads_control = $request->ads_control;
         $app->ios_app_publishing_control = $request->ios_app_publishing_control;
         $app->ios_ads_control = $request->ios_ads_control;
         $app->enable_countries = json_encode($request->enable_countries);
         $app->status = $request->status;
-
         $app->google_app_id = $request->google_app_id;
         $app->google_appOpenAd_id = $request->google_appOpenAd_id;
         $app->google_banner_ads = $request->google_banner_ads;

@@ -392,3 +392,107 @@ if (!function_exists('get_language_list')) {
         return $array;
     }
 }
+
+if (!function_exists('send_notification')) {
+    function send_notification($app, $title, $body, $image, $data = [])
+    {
+        
+        send_notification_core($app, 'android', $title, $body, $image, $data);
+        // send_notification_core($app, 'ios', $title, $body, $image, $data);
+
+        return true;
+    }
+}
+
+if (!function_exists('send_notification_core')) {
+    function send_notification_core($app, $platform, $title, $body, $image, $data = [])
+    {
+        $notification_type = "{$platform}_notification_type";
+        $onesignal_app_id = "{$platform}_onesignal_app_id";
+        $onesignal_api_key = "{$platform}_onesignal_api_key";
+        $firebase_server_key = "{$platform}_firebase_server_key";
+        $firebase_topics = "{$platform}_firebase_topics";
+
+        if($app->$notification_type == 'onesignal')
+        {
+            $headings = array("en" => $title);
+            $content = array("en" => $body);
+
+            $data['image'] = $image;
+            $ios_img = array(
+                "id1" => $image,
+            );
+
+            $fields = array(
+                'app_id' => $app->$onesignal_app_id,
+                'headings' => $headings,
+                'included_segments' => array('All'),
+                'data' => $data,
+                'big_picture' => $image,
+                'large_icon' => get_logo(),
+                'content_available' => true,
+                'contents' => $content,
+                'ios_attachments' => $ios_img,
+            );
+
+            $fields = json_encode($fields);
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8', 
+                'Authorization: Basic ' . $app->$onesignal_api_key));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($ch, CURLOPT_HEADER, FALSE);
+            curl_setopt($ch, CURLOPT_POST, TRUE);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);    
+
+            $response = curl_exec($ch);
+            curl_close($ch);
+            
+        }
+        else
+        {
+            $url = 'https://fcm.googleapis.com/fcm/send';
+
+            $requires = array(
+                'title' => $title,
+                'body' => $body,
+                'style' => "picture",
+                'image' => $image,
+            );
+            $dataArr = array_merge($requires, $data);
+
+            $notificationArr = array(
+                'title' => $title,
+                'body' => $body,
+                'image' => $image,
+                'style' => "picture",
+            );
+            
+            $android = array(
+                'notification' => array('image' => $image),
+            );
+
+            $arrayToSend = array('to' => "/topics/" . $app->firebase_topics, 'data' => $dataArr, 'priority' => 'high', 'notification' => $notificationArr , 'android' => $android);
+            $fields = json_encode($arrayToSend);
+            $headers = array(
+                'Authorization: key=' . $app->firebase_server_key,
+                'Content-Type: application/json'
+            );
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+
+            $result = curl_exec($ch);
+            curl_close($ch);
+            $jsonDecode = json_decode($result, true);
+        }
+
+        return true;
+    }
+}
