@@ -35,6 +35,9 @@ use App\Http\Controllers\Install\InstallController;
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
         Route::post('/serials/reordering', [SerialController::class, 'reordering'])->name('serials.reordering');
         Route::get('/notifications/deleteall', [NotificationController::class, 'deleteall'])->name('notifications.deleteall');
+
+        Route::get('/notifications/upcomingEpisodeNotify', [NotificationController::class, 'upcomingEpisodeNotify'])->name('notifications.upcomingEpisodeNotify');
+        
         Route::resource('apps', AppController::class);
         Route::resource('serials', SerialController::class);
         Route::resource('episodes', EpisodeController::class);

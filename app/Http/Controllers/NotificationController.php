@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use File;
 use Auth;
+use Cache;
+use Carbon;
 use Validator;
 use DataTables;
+use App\Models\Episode;
 use App\Models\AppModel;
+use App\Models\EpisodeApp;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -287,6 +291,38 @@ class NotificationController extends Controller
             return back()->with('success', _lang('Information has been deleted'));
         } else {
             return response()->json(['result' => 'success', 'message' => _lang('Information has been deleted sucessfully')]);
+        }
+    }
+
+    public function upcomingEpisodeNotify()
+    {
+        $episodes = Episode::whereDate('episode_date', '=', Carbon::today())->get();
+
+        foreach ($episodes as $episode) 
+        {
+            $actual_time = Carbon::parse($episode->episode_date);
+            $before_five_min = Carbon::parse($episode->episode_date)->subMinutes(5);
+
+            if($before_five_min->lessThanOrEqualTo(Carbon::now()) && $actual_time->greaterThan(Carbon::now()))
+            {
+                $episode_apps = EpisodeApp::where('episode_id', $episode->id)->get();
+
+                if (!Cache::has('episode_id_' . $episode->id)) 
+                {
+                    Cache::put('episode_id_' . $episode->id, $episode->id, now()->addMinutes(5));
+
+                    foreach ($episode_apps as $app)
+                    {
+                        $app = AppModel::find($app->app_id);
+
+                        send_notification($app, $episode->episode_title, "Just Watch It...", $image = null, $data = []);
+                    }
+                }
+            }
+            else
+            {
+                echo "No Notify $episode->id <br>";
+            }
         }
     }
 }
